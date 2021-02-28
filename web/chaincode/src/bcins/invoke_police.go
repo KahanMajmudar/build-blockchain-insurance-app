@@ -3,16 +3,23 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
 func listTheftClaims(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+	// GetStateByPartialCompositeKey queries the state in the ledger based on
+	// a given partial composite key. This function returns an iterator
+	// which can be used to iterate over all composite keys whose prefix(here it is prefixClaim)
+	// matches the given partial composite key
 	results := []interface{}{}
 	resultsIterator, err := stub.GetStateByPartialCompositeKey(prefixClaim, []string{})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
+	// delay the execution of this line till nearby functions returns
+	// usually used for cleanup work
 	defer resultsIterator.Close()
 
 	for resultsIterator.HasNext() {
@@ -48,6 +55,8 @@ func listTheftClaims(stub shim.ChaincodeStubInterface, args []string) pb.Respons
 		}{}
 
 		// Fetch key and set other properties
+		// SplitCompositeKey splits the specified key into attributes on which the
+		// composite key was formed.
 		prefix, keyParts, err := stub.SplitCompositeKey(kvResult.Key)
 		if len(keyParts) < 2 {
 			result.UUID = prefix

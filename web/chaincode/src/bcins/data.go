@@ -5,8 +5,9 @@ import (
 	"time"
 
 	"errors"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strings"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // Key consists of prefix + UUID of the contract type
@@ -58,18 +59,25 @@ type Claim struct {
 // The claim status indicates how the claim should be treated
 type ClaimStatus int8
 
+// This is an enumerator for const creation. The Go compiler starts iota at 0 and increments it by one for each following constant
 const (
 	// The claims status is unknown
+	// 0
 	ClaimStatusUnknown ClaimStatus = iota
 	// The claim is new
+	// 1
 	ClaimStatusNew
 	// The claim has been rejected (either by the insurer, or by authorities
+	// 2
 	ClaimStatusRejected
 	// The item is up for repairs, or has been repaired
+	// 3
 	ClaimStatusRepair
 	// The customer should be reimbursed, or has already been
+	// 4
 	ClaimStatusReimbursement
 	// The theft of the item has been confirmed by authorities
+	// 5
 	ClaimStatusTheftConfirmed
 )
 
